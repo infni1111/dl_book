@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>{{ book.title }} — Structure</title>
+<style>
+  body { font-family: Georgia, serif; max-width: 900px; margin: 40px auto;
+         padding: 0 20px; color: #222; line-height: 1.55; background: #fafafa; }
+  h1 { border-bottom: 3px solid #333; padding-bottom: 8px; }
+  h2 { color: #1a4d8c; margin-top: 40px; border-bottom: 1px solid #bbb; padding-bottom: 4px; }
+  h3 { color: #333; margin-top: 26px; }
+  .meta { color: #555; font-size: 0.95em; margin-bottom: 20px; }
+  .meta a { color: #1a4d8c; }
+  .section { margin: 6px 0 6px 20px; }
+  .section-title { font-weight: 600; }
+  ul.sub { margin: 4px 0 10px 40px; padding: 0; color: #444; font-size: 0.95em; }
+  ul.sub li { list-style: disc; margin: 2px 0; }
+  .part { background: #eef3f9; padding: 10px 16px; border-left: 4px solid #1a4d8c;
+          margin-top: 40px; }
+  .front-back { background: #f5f5f5; padding: 8px 16px; border-radius: 4px;
+                font-style: italic; color: #555; }
+  details { margin: 10px 0; }
+  summary { cursor: pointer; font-weight: bold; font-size: 1.05em; padding: 4px 0; }
+  summary:hover { color: #1a4d8c; }
+</style>
+</head>
+<body>
+
+<h1>{{ book.title }}</h1>
+<div class="meta">
+  <strong>Authors:</strong> {{ book.authors }} &nbsp; | &nbsp;
+  <strong>Year:</strong> {{ book.year }} &nbsp; | &nbsp;
+  <strong>Publisher:</strong> {{ book.publisher }}<br>
+  <strong>Free online:</strong> <a href="{{ book.url }}" target="_blank">{{ book.url }}</a>
+</div>
+
+<div class="front-back">
+  <strong>Front matter:</strong>
+  {% for item in book.front %}{{ item }}{% if not loop.last %} · {% endif %}{% endfor %}
+</div>
+
+{% for part in book.parts %}
+  <div class="part"><h2 style="margin:0;border:none;">{{ part.name }}</h2></div>
+  {% for ch in part.chapters %}
+    <details open>
+      <summary>Chapter {{ ch.num }} — {{ ch.title }}</summary>
+      {% for num, title, subs in ch.sections %}
+        <div class="section">
+          <span class="section-title">{{ num }} {{ title }}</span>
+          {% if subs %}
+            <ul class="sub">
+              {% for s in subs %}<li>{{ s }}</li>{% endfor %}
+            </ul>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </details>
+  {% endfor %}
+{% endfor %}
+
+<div class="front-back" style="margin-top:40px;">
+  <strong>Back matter:</strong>
+  {% for item in book.back %}{{ item }}{% if not loop.last %} · {% endif %}{% endfor %}
+</div>
+
+</body>
+</html>
